@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -112,6 +113,15 @@ public class PictureListAdapter extends BaseAdapter {
             //
             Bitmap thumbnail = BitmapFactory.decodeFile(item.getAbsolutePath());
             iv_picture.setImageBitmap(thumbnail);
+            MimeTypeMap mime = MimeTypeMap.getSingleton();
+            int extTst = item.getAbsolutePath().lastIndexOf(".") + 1;
+            String ext = item.getAbsolutePath().substring(
+                    extTst,
+                    item.getAbsolutePath().length()
+            );
+            String type = mime.getMimeTypeFromExtension(ext);
+
+
             //
             //iv_picture.setImageBitmap(Bitmap.createScaledBitmap(image,200,200,false));
             //
