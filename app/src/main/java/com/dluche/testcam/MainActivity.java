@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    private Button btn_ctrl_act;
     private Button btn_picture;
     private TextView tv_ttl;
     private Context context;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private void iniVars() {
         context = this;
         //
+        btn_ctrl_act = findViewById(R.id.main_btn_ctrl_act);
+        //
         tv_ttl = (TextView) findViewById(R.id.main_tv_ttl);
         //
         btn_picture = (Button) findViewById(R.id.main_btn_picture);
@@ -65,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
     private void iniAction() {
 
         generatePictureDir();
+
+        btn_ctrl_act.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mIntent = new Intent(context,CallCameraCtrl.class);
+                context.startActivity(mIntent);
+            }
+        });
 
         btn_picture.setOnClickListener(new View.OnClickListener() {
             @Override

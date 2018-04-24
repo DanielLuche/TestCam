@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,16 +44,28 @@ public class CtrlCamera extends LinearLayout implements View.OnClickListener {
         initialize(context);
     }
 
+    public CtrlCamera(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        initialize(context);
+    }
+
+    public CtrlCamera(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initialize(context);
+    }
+
     private void initialize(Context context) {
         setDefaultValues(context);
         //
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.ctrl_camera_layout, this);
+        inflater.inflate(R.layout.ctrl_camera_layout, this,true);
         //
         iv_icon = findViewById(R.id.ctrl_cam_iv_icon);
         //
         tv_qty = findViewById(R.id.ctrl_cam_tv_qty);
+        //
+        updateIconState();
 
     }
 
@@ -64,7 +78,6 @@ public class CtrlCamera extends LinearLayout implements View.OnClickListener {
         this.newImage = null;
         this.selfIcon = R.drawable.ic_camera_alt_black_24dp;
         this.prefix = "123";
-
     }
 
     public File getNewImage() {
@@ -128,9 +141,12 @@ public class CtrlCamera extends LinearLayout implements View.OnClickListener {
     private void updateIconState(){
         if(getCountPictureAssociated() == 0){
             iv_icon.setColorFilter(R.color.colorAccent);
+            tv_qty.setText("");
+            tv_qty.setVisibility(GONE);
         }else{
             iv_icon.setColorFilter(R.color.colorPrimaryDark);
             tv_qty.setText(String.valueOf(getCountPictureAssociated()));
+            tv_qty.setVisibility(VISIBLE);
         }
     }
 

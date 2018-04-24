@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TestCam</string>
+    <string name="title_activity_call_camera_ctrl">CallCameraCtrl</string>
 </resources>
