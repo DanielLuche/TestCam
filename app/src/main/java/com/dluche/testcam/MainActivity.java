@@ -2,7 +2,10 @@ package com.dluche.testcam;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -246,12 +250,24 @@ public class MainActivity extends AppCompatActivity {
         File thumbnailFile = new File(pathThumbnail + "/"+PREFIX_THUMBNAIL +newImage.getName());
         //
         //Bitmap thumbnail = BitmapFactory.decodeFile(newImage.getAbsolutePath());
+        Bitmap thumbnail = createBitmapThumbnail(newImage.getAbsolutePath());
         ExifInterface exifOrigin = new ExifInterface(newImage.getAbsolutePath());
         //
-        FileOutputStream fileOutputStream = new FileOutputStream(thumbnailFile);
-        fileOutputStream.write(exifOrigin.getThumbnail());
-        fileOutputStream.flush();
-        fileOutputStream.close();
+        if(exifOrigin.getThumbnail() != null && exifOrigin.getThumbnail().length > 0) {
+            FileOutputStream fileOutputStream = new FileOutputStream(thumbnailFile);
+            fileOutputStream.write(exifOrigin.getThumbnail());
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        }else{
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            thumbnail.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] thumbBytes = baos.toByteArray();
+
+            FileOutputStream fileOutputStream = new FileOutputStream(thumbnailFile);
+            fileOutputStream.write(thumbBytes);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        }
         //
         ExifInterface exifThumbnail = new ExifInterface(thumbnailFile.getAbsolutePath());
         float[] latLong = new float[2];
@@ -273,6 +289,12 @@ public class MainActivity extends AppCompatActivity {
         }
         exifThumbnail.saveAttributes();
 
+    }
+
+    private Bitmap createBitmapThumbnail(String imagePath){
+        final int THUMBNAIL_SIZE = 64;
+        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePath), THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+        return ThumbImage;
     }
 
     private void proceedSavePictureV2(Intent data) throws IOException {
